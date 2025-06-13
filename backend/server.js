@@ -10,6 +10,11 @@ const userRoutes = require("./routes/userRoutes");
 const taskRoutes = require('./routes/taskRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 
+// Root route to handle GET /
+app.get('/', (req, res) => {
+    res.send('API is running');
+});
+
 
 
 
