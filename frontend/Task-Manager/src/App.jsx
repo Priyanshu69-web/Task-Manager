@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom'
+import { HashRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom'
 import Login from './pages/Auth/Login';
 import SignUp from './pages/Auth/SignUp';
 import Dashboard from './pages/Admin/Dashboard';
@@ -57,14 +57,14 @@ const App = () => {
 }
 export default App;
 
-const Root =()=>{
-  const {user,loading} =useContext(UserContext);
+const Root = () => {
+  const { user, loading } = useContext(UserContext);
 
-  if(loading) return <Outlet/>
+  if (loading) return <Outlet />
 
-  if(!user){
+  if (!user) {
     return <Navigate to="/login" />;
 
   }
-  return user.role ==="admin" ? <Navigate to="/admin/dashboard"/>: <Navigate to="/user/dashboard"/>;
+  return user.role === "admin" ? <Navigate to="/admin/dashboard" /> : <Navigate to="/user/dashboard" />;
 };
