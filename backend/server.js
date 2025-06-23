@@ -46,7 +46,17 @@ app.use("/api/reports", reportRoutes);
 
 
 // server uploads folder 
-app.use("/uploads", express.static(path.join(__dirname,"uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// Serve frontend static files
+const frontendPath = path.join(__dirname, "..", "frontend", "Task-Manager", "dist");
+app.use(express.static(frontendPath));
+
+// Catch-all route to serve index.html for client-side routing support
+app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'index.html'));
+});
+
 
 
 //Start Server
