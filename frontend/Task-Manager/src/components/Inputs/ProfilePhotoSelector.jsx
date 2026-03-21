@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { LuUser, LuUpload, LuTrash } from "react-icons/lu";
+import { motion } from 'framer-motion'
 
 
 const ProfilePhotoSelector = ({ image, setImage }) => {
@@ -13,7 +14,7 @@ const ProfilePhotoSelector = ({ image, setImage }) => {
             //generate preview url from the file
             const preview = URL.createObjectURL(file);
             setPreviewUrl(preview);
-        } 
+        }
     };
     const handleRemoveImage = () => {
         setImage(null);
@@ -24,7 +25,9 @@ const ProfilePhotoSelector = ({ image, setImage }) => {
         inputRef.current.click();
     };
     return (
-        <div className="flex justify-center mb-6">
+        <motion.div initial={{ opacity: 0, }}
+            animate={{ opacity: 1, }}
+            transition={{ duration: 1, delay: .5 }} className="flex justify-center mb-6">
             <input
                 type="file"
                 accept="image/*"
@@ -56,7 +59,7 @@ const ProfilePhotoSelector = ({ image, setImage }) => {
                     </button>
                 </div>
             )}
-        </div>
+        </motion.div>
     )
 }
 

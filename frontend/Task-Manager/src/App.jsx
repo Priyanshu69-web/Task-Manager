@@ -15,6 +15,7 @@ import PrivateRoute from './routes/PrivateRoute';
 import UserProvider, { UserContext } from './context/useContext';
 import TaskProvider from './context/TaskContext';
 import { ToastBar, Toaster } from 'react-hot-toast';
+import Profile from './pages/Users/Profile';
 const App = () => {
   return (
     <UserProvider>
@@ -24,6 +25,7 @@ const App = () => {
             <Routes>
               <Route path='/login' element={<Login />} />
               <Route path='/signUp' element={<SignUp />} />
+              <Route path="/profile/:id" element={<Profile />} />
               {/*Admin Routes*/}
               <Route element={< PrivateRoute allowedRoles={["admin"]} />}>
                 <Route path='/admin/dashboard' element={<Dashboard />} />

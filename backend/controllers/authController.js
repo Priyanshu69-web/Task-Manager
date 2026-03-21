@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const generateToken = (UserId) => {
     return jwt.sign({ id: UserId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
-};  
+};
 
 //@desc  Register new User
 //@route  POST /api/auth/register
@@ -83,7 +83,7 @@ const loginUser = async (req, res) => {
             role: user.role,
             profileImageUrl: user.profileImageUrl,
             token: generateToken(user._id),
-        })
+        }, { expiresIn: "1d" })
 
     } catch (error) {
         res.status(500).json({ message: "server error", error: error.message });
@@ -100,6 +100,7 @@ const getUserProfile = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "user not found" });
         }
+        console.log(user);
         res.json(user);
     } catch (error) {
         res.status(500).json({ message: "server error", error: error.message });
@@ -109,7 +110,7 @@ const getUserProfile = async (req, res) => {
 
 //@desc  Get user profile
 //@route  PUT /api/auth/profile
-//@access Private(REquires JWT)
+//@access Private(Requires JWT)
 
 const updateUserProfile = async (req, res) => {
 
@@ -123,17 +124,17 @@ const updateUserProfile = async (req, res) => {
         user.name = req.body.name || req.name;
         user.email = req.body.email || req.email;
 
-        if(req.body.password){
-            const salt =await bcrypt.genSalt(10);
-            user.password =await bcrypt.hash(req.body.password,salt);   
+        if (req.body.password) {
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(req.body.password, salt);
         }
 
-        const UpdatedUser= await user.save();
+        const UpdatedUser = await user.save();
         res.json({
 
             _id: UpdatedUser._id,
             name: UpdatedUser.name,
-            email:UpdatedUser.email,
+            email: UpdatedUser.email,
             role: UpdatedUser.role,
             profileImageUrl: UpdatedUser.profileImageUrl,
             token: generateToken(UpdatedUser._id)

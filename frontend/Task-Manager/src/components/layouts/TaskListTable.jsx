@@ -1,5 +1,6 @@
 import React from "react";
 import moment from "moment";
+import { motion } from "framer-motion";
 
 const TaskListTable = ({ tableData }) => {
   const getStatusBadgeColor = (status) => {
@@ -29,7 +30,11 @@ const TaskListTable = ({ tableData }) => {
   };
 
   return (
-    <div className="overflow-x-auto p-0 rounded-lg mt-3">
+    <motion.div
+      initial={{ opacity: 0, y: -10 }}
+      whileInView={{ opacity: 1 }}
+
+      className="overflow-x-auto p-0 rounded-lg mt-3">
       <table className="min-w-full">
         <thead>
           <tr className="text-left">
@@ -66,7 +71,7 @@ const TaskListTable = ({ tableData }) => {
           ))}
         </tbody>
       </table>
-    </div>
+    </motion.div>
   );
 };
 

@@ -7,6 +7,7 @@ import { validateEmail } from "../../utils/helper";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPath";
 import { UserContext } from "../../context/useContext";
+import { motion } from "framer-motion";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -42,6 +43,8 @@ const Login = () => {
 
             const { token, role } = response.data;
 
+
+
             // Store token in localStorage
             if (token) {
                 localStorage.setItem("token", token);
@@ -68,7 +71,12 @@ const Login = () => {
 
     return (
         <AuthLayout>
-            <div className="flex-1 flex items-center">
+            <motion.div
+                initial={{ opacity: 0, x: -10, y: -10 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{ duration: 1, delay: 1 }}
+
+                className="flex-1 flex items-center">
                 <div className="w-full lg:w-[70%]">
                     <h3 className="text-xl font-semibold text-black">Welcome Back</h3>
                     <p className="text-xs text-slate-700 mt-[5px] mb-6">Please enter your details to log in</p>
@@ -92,7 +100,7 @@ const Login = () => {
                             LOGIN
                         </button>
 
-                        <p className="text-[13px] text-slate-800 mt-3">
+                        <p className="text-[13px] text-slate-800 mt-3 ">
                             Don't have an account?{""}
                             <Link className=" font-medium text-primary underline " to="/signup">
                                 Signup
@@ -100,7 +108,7 @@ const Login = () => {
                         </p>
                     </form>
                 </div>
-            </div>
+            </motion.div>
 
         </AuthLayout>
     )

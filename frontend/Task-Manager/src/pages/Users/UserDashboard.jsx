@@ -13,6 +13,7 @@ import { LuArrowRight } from "react-icons/lu";
 import TaskListTable from "../../components/layouts/TaskListTable";
 import CustomPieChart from "../../components/Charts/CustomPieChart";
 import CustomBarChart from "../../components/Charts/CustomBarChart";
+import { motion } from 'framer-motion'
 
 
 const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"];
@@ -78,16 +79,19 @@ const UserDashboard = () => {
     }, [refreshDashboard]);
 
 
-    
+
 
     return (
         <DashboardLayout activeMenu={"Dashboard"}>
             <div className="card my-5">
                 <div>
                     <div className="col-span-3">
-                        <h2 className="text-xl md:text-2xl">
+                        <motion.h2
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 1 }} className="text-xl md:text-2xl">
                             Hello! {user?.name}
-                        </h2>
+                        </motion.h2>
                         <p className="text-xs md:text-[13px] text-gray-400 mt-1.5">
                             {moment().format("dddd Do MMM YYYY")}
                         </p>
@@ -111,7 +115,7 @@ const UserDashboard = () => {
                     <InfoCard
                         label="In Progress Tasks"
                         value={addThousandsSeprator(
-                            dashboardData?.charts?.taskDistribution?.["In Progress"]  || 0
+                            dashboardData?.charts?.taskDistribution?.["In Progress"] || 0
                         )}
                         color="bg-cyan-500"
                     />

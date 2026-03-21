@@ -9,6 +9,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPath";
 import { UserContext } from "../../context/useContext";
 import UploadImage from "../../utils/uploadImage";
+import { motion } from "framer-motion";
 
 const SignUp = () => {
     const [profilePic, setProfilePic] = useState(null);
@@ -87,15 +88,20 @@ const SignUp = () => {
 
     return (
         <AuthLayout>
-            <div className=" lg:w-[100%] h-auto md:h-full mt-10 md:mt-0 flex flex-col justify-center">
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1, delay: .5 }} className=" lg:w-[100%] h-auto md:h-full mt-10 md:mt-0 flex flex-col justify-center">
                 <h3 className="text-xl font-semibold text-black">Create an Account</h3>
                 <p className="text-xs text-slate-700 mt-[5px] mb-6">
                     Join us today by entering your details below.
                 </p>
-            </div>
+            </motion.div>
             <form onSubmit={handdleSignup}>
                 <ProfilePhotoSelector image={profilePic} setImage={setProfilePic}></ProfilePhotoSelector>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <motion.div initial={{ opacity: 0, x: -10, y: -10 }}
+                    animate={{ opacity: 1, x: 0, y: 0 }}
+                    transition={{ duration: 1, delay: 1 }} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
                         value={fullName}
                         onChange={({ target }) => setFullName(target.value)}
@@ -138,7 +144,7 @@ const SignUp = () => {
                         </Link>
                     </p>
 
-                </div>
+                </motion.div>
             </form>
 
         </AuthLayout>
