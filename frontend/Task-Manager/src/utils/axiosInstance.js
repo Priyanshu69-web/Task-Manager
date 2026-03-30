@@ -37,8 +37,10 @@ axiosInstance.interceptors.response.use(
         //Handle common error globally
         if(error.response){
             if(error.response.status ===401){
-                //redirect to login page 
-                window.location.href ="/login";
+                //redirect to login page only if not on it
+                if (window.location.pathname !== "/login") {
+                    window.location.href ="/login";
+                }
             }else if (error.response.status===500){
                 console.log("Request timeout, Please try again.");
             } else if(error.code =="ECONNABORTED"){
