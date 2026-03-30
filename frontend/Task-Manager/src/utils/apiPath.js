@@ -1,4 +1,6 @@
-export const BASE_URL = "http://localhost:8000";
+export const BASE_URL = import.meta.env.MODE === "production" 
+  ? "https://task-manager-1-709e.onrender.com" 
+  : "http://localhost:8000";
 
 //utils/apiPaths.js
 
