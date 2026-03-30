@@ -4,6 +4,29 @@ import { API_PATHS } from "../../utils/apiPath";
 import { LuUsers } from "react-icons/lu";
 import Modal from "../layouts/Modal";
 import AvatarGroup from "../layouts/AvatarGroup";
+import { getAvatarUrl, getInitials } from "../../utils/avatarHelper";
+
+const UserAvatar = ({ url, name }) => {
+    const [imgError, setImgError] = React.useState(false);
+    const resolvedUrl = getAvatarUrl(url);
+
+    if (!resolvedUrl || imgError) {
+        return (
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold">
+                {getInitials(name)}
+            </div>
+        );
+    }
+
+    return (
+        <img
+            src={resolvedUrl}
+            alt={name}
+            className="w-10 h-10 rounded-full object-cover"
+            onError={() => setImgError(true)}
+        />
+    );
+};
 
 const SelectUsers = ({ SelectedUsers, setSelectedUsers }) => {
     const [allUsers, setAllUsers] = useState([]);
@@ -45,7 +68,7 @@ const SelectUsers = ({ SelectedUsers, setSelectedUsers }) => {
         }
 
         return () => { };
-    }, [SelectUsers]);
+    }, [SelectedUsers]);
 
 
 
@@ -75,11 +98,7 @@ const SelectUsers = ({ SelectedUsers, setSelectedUsers }) => {
                             key={user._id}
                             className="flex items-center gap-4 p-3 border-b border-gray-200"
                         >
-                            <img
-                                src={user.profileImageUrl}
-                                alt={user.name}
-                                className="w-10 h-10 rounded-full"
-                            />
+                            <UserAvatar url={user.profileImageUrl} name={user.name} />
                             <div className="flex-1">
                                 <p className="font-medium tet-gray-800 dark:text-white">
                                     {user.name}

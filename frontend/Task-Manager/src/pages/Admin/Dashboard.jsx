@@ -13,6 +13,8 @@ import { LuArrowRight } from "react-icons/lu";
 import TaskListTable from "../../components/layouts/TaskListTable";
 import CustomPieChart from "../../components/Charts/CustomPieChart";
 import CustomBarChart from "../../components/Charts/CustomBarChart";
+import { DashboardSkeleton } from "../../components/layouts/Skeletons";
+import toast from "react-hot-toast";
 
 
 const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"];
@@ -28,6 +30,8 @@ const Dashboard = () => {
     const [dashboardData, setDashboardData] = useState(null);
     const [pieChartData, setPieChartData] = useState([]);
     const [barChartData, setBarChartData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     // prepare Charts Data 
     const prepareChartData = (data) => {
@@ -53,19 +57,21 @@ const Dashboard = () => {
 
     const getDashboardData = async () => {
         try {
+            setLoading(true);
+            setError(null);
             const response = await axiosInstance.get(
                 API_PATHS.TASKS.GET_DASHBOARD_DATA
             );
             if (response.data) {
                 setDashboardData(response.data);
                 prepareChartData(response.data?.charts || null);
-
             }
-           
-
-
         } catch (error) {
             console.error("Error fetching dashboard data", error);
+            setError("Failed to load dashboard data. Please try again.");
+            toast.error("Failed to load dashboard data");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -80,7 +86,26 @@ const Dashboard = () => {
     }, [refreshDashboard]);
 
 
-    
+    if (loading) {
+        return (
+            <DashboardLayout activeMenu={"Dashboard"}>
+                <DashboardSkeleton />
+            </DashboardLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <DashboardLayout activeMenu={"Dashboard"}>
+                <div className="flex flex-col items-center justify-center h-64 gap-4">
+                    <p className="text-red-500 text-sm">{error}</p>
+                    <button className="card-btn" onClick={getDashboardData}>
+                        Retry
+                    </button>
+                </div>
+            </DashboardLayout>
+        );
+    }
 
     return (
         <DashboardLayout activeMenu={"Dashboard"}>
@@ -127,7 +152,7 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-clos-2 gap-6 my-4 md:my-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6">
                 <div>
                     <div className="card">
                         <div className="flex items-center justify-between">

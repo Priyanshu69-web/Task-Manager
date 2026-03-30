@@ -3,10 +3,12 @@ import { UserContext } from "../../context/useContext";
 import { useNavigate } from "react-router-dom";
 import { SIDE_MENU_DATA, SIDE_MENU_USER_DATA } from "../../utils/data.js";
 import { motion } from 'framer-motion';
+import { getAvatarUrl, getInitials } from "../../utils/avatarHelper";
 
 const SideMenu = ({ activeMenu }) => {
     const { user, clearUser } = useContext(UserContext);
     const [sideMenuData, setSideMenuData] = useState([]);
+    const [imgError, setImgError] = useState(false);
 
     const navigate = useNavigate();
 
@@ -31,6 +33,8 @@ const SideMenu = ({ activeMenu }) => {
         return () => { };
     }, [user]);
 
+    const avatarUrl = getAvatarUrl(user?.profileImageUrl);
+
     return (
         <motion.div initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
@@ -39,11 +43,18 @@ const SideMenu = ({ activeMenu }) => {
             <div className="flex flex-col items-center justify-center mb-7 pt-5">
                 <div className="relative cursor-pointer" onClick={() => navigate(`/profile/${user?._id}`)}
                     title="Go to Profile" >
-                    <img
-                        src={user?.profileImageUrl || ""}
-                        alt="Profile Image"
-                        className="w-20 h-20 bg-slate-400 rounded-full"
-                    />
+                    {avatarUrl && !imgError ? (
+                        <img
+                            src={avatarUrl}
+                            alt="Profile"
+                            className="w-20 h-20 rounded-full object-cover"
+                            onError={() => setImgError(true)}
+                        />
+                    ) : (
+                        <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-white text-2xl font-bold">
+                            {getInitials(user?.name)}
+                        </div>
+                    )}
                 </div>
 
                 {user?.role === "admin" && (

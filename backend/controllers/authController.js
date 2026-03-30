@@ -83,7 +83,7 @@ const loginUser = async (req, res) => {
             role: user.role,
             profileImageUrl: user.profileImageUrl,
             token: generateToken(user._id),
-        }, { expiresIn: "1d" })
+        })
 
     } catch (error) {
         res.status(500).json({ message: "server error", error: error.message });
@@ -121,8 +121,8 @@ const updateUserProfile = async (req, res) => {
             return res.status(404).json({ message: "user not found" });
         }
 
-        user.name = req.body.name || req.name;
-        user.email = req.body.email || req.email;
+        user.name = req.body.name || user.name;
+        user.email = req.body.email || user.email;
 
         if (req.body.password) {
             const salt = await bcrypt.genSalt(10);

@@ -1,17 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { LuOmega } from "react-icons/lu";
+import { getAvatarUrl, getInitials } from "../../utils/avatarHelper";
 
 const UserCard = ({ userInfo }) => {
+    const [imgError, setImgError] = useState(false);
+    const avatarUrl = getAvatarUrl(userInfo?.profileImageUrl);
 
     return (
         <div className="user-card p-2">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <img
-                        src={userInfo?.profileImageUrl}
-                        alt={'Avatar'}
-                        className="w-12 h-12 rounded-full border-2 border-white"
-                    />
+                    {avatarUrl && !imgError ? (
+                        <img
+                            src={avatarUrl}
+                            alt={'Avatar'}
+                            className="w-12 h-12 rounded-full border-2 border-white object-cover"
+                            onError={() => setImgError(true)}
+                        />
+                    ) : (
+                        <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold border-2 border-white">
+                            {getInitials(userInfo?.name)}
+                        </div>
+                    )}
                     <div>
                         <p className="text-sm font-medium">{userInfo?.name}</p>
                         <p className="text-xs text-gray-500">{userInfo?.email}</p>

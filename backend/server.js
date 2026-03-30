@@ -10,42 +10,31 @@ const userRoutes = require("./routes/userRoutes");
 const taskRoutes = require('./routes/taskRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 
-// Root route to handle GET /
-app.get('/', (req, res) => {
-    res.send('API is running');
-});
+// connect database
+connectDB();
 
-
-
-
-//Middleware to handle CORS
-
+// Middleware (CORS + JSON parsing BEFORE routes)
 app.use(
     cors({
         origin: process.env.CLIENT_URL || "*",
         methods: ["GET", "POST", "PUT", "DELETE"],
         allowedHeaders: ["Content-Type", "Authorization"],
-
     })
 );
-
-
-// connect databse
-connectDB();
-
-//Midddleware
 app.use(express.json());
 
+// Root route to handle GET /
+app.get('/', (req, res) => {
+    res.send('API is running');
+});
 
-
-//Routes
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/reports", reportRoutes);
 
-
-// server uploads folder 
+// Serve uploads folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Serve frontend static files

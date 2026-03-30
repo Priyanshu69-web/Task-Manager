@@ -6,6 +6,7 @@ import { UserContext } from "../../context/useContext";
 import UploadImage from "../../utils/uploadImage";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPath";
+import { getAvatarUrl, getInitials } from "../../utils/avatarHelper";
 
 const Profile = () => {
     const { user, updateUser } = useContext(UserContext);
@@ -15,6 +16,7 @@ const Profile = () => {
     const [password, setPassword] = useState("");
     const [profileImageUrl, setProfileImageUrl] = useState("");
     const [imageFile, setImageFile] = useState(null);
+    const [profileImgError, setProfileImgError] = useState(false);
     const [message, setMessage] = useState("");
 
     // Populate form with current user data on mount
@@ -61,11 +63,24 @@ const Profile = () => {
                 <h2 className="text-2xl font-bold mb-6 text-center">Edit Profile</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="flex items-center gap-4">
-                        <img
-                            src={imageFile ? URL.createObjectURL(imageFile) : profileImageUrl || "/default-avatar.png"}
-                            alt="Profile"
-                            className="w-16 h-16 rounded-full object-cover"
-                        />
+                        {imageFile ? (
+                            <img
+                                src={URL.createObjectURL(imageFile)}
+                                alt="Profile"
+                                className="w-16 h-16 rounded-full object-cover"
+                            />
+                        ) : getAvatarUrl(profileImageUrl) && !profileImgError ? (
+                            <img
+                                src={getAvatarUrl(profileImageUrl)}
+                                alt="Profile"
+                                className="w-16 h-16 rounded-full object-cover"
+                                onError={() => setProfileImgError(true)}
+                            />
+                        ) : (
+                            <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white text-xl font-bold">
+                                {getInitials(name)}
+                            </div>
+                        )}
                         <input
                             type="file"
                             accept="image/*"

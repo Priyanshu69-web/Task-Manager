@@ -196,7 +196,7 @@ const updateTaskStatus = async (req, res) => {
 
         task.status = req.body.status || task.status;
 
-        if (task.status === "Compelted") {
+        if (task.status === "Completed") {
             task.todoChecklist.forEach((item) => (item.completed = true));
             task.progress = 100;
         }
@@ -244,7 +244,7 @@ const updateTaskChecklist = async (req, res) => {
             "assignedTo",
             "name email profileImageUrl"
         );
-        res.json({ message: "Task checklist updated", task: updateTask });
+        res.json({ message: "Task checklist updated", task: updatedTask });
 
     } catch (error) {
         res.status(500).json({ message: "Server Error", error: error.message })
@@ -344,7 +344,7 @@ const getUserDashboardData = async (req, res) => {
         ]);
 
         const taskDistribution = taskStatuses.reduce((acc, status) => {
-            const formattedKey = status.replace(/\5+/g, ""); //remove spaces from response key 
+            const formattedKey = status.replace(/\s+/g, ""); //remove spaces from response key 
             acc[formattedKey] =
                 taskDistributionRaw.find((item) => item._id === status)?.count || 0;
             return acc;
@@ -363,8 +363,8 @@ const getUserDashboardData = async (req, res) => {
             return acc;
         }, {});
         
-        //Fetch recent 10 tasks
-        const recentTasks = await Task.find()
+        //Fetch recent 10 tasks for this user
+        const recentTasks = await Task.find({ assignedTo: userId })
             .sort({ createdAt: -1 })
             .limit(10)
             .select("title status priority dueDate createdAt");

@@ -7,19 +7,22 @@ import { LuFileSpreadsheet } from "react-icons/lu";
 import TaskStatusTabs from '../../components/layouts/TaskStatusTabs'
 import TaskCard from "../../components/Cards/TaskCard";
 import toast from "react-hot-toast";
+import { TaskCardsSkeleton } from "../../components/layouts/Skeletons";
 
 const ManageTasks = () => {
 
     const [allTasks, setAllTasks] = useState([]);
-
     const [tabs, setTabs] = useState([]);
     const [filterStatus, setFilterStatus] = useState("All");
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const navigate = useNavigate();
 
     const getAllTasks = async () => {
-
         try {
+            setLoading(true);
+            setError(null);
             const response = await axiosInstance.get(API_PATHS.TASKS.GET_ALL_TASKS,
                 {
                     params: {
@@ -31,25 +34,22 @@ const ManageTasks = () => {
 
             const statusSummary = response.data?.statusSummary || {};
 
-
             const statusArray = [
                 { label: "All", count: statusSummary.all || 0 },
                 { label: "Pending", count: statusSummary.pendingTasks || 0 },
                 { label: "In Progress", count: statusSummary.inProgressTasks || 0 },
                 { label: "Completed", count: statusSummary.completedTasks || 0 },
-
             ];
 
             setTabs(statusArray);
-
-
         } catch (error) {
-            console.error("Error fetching users:", error);
-
+            console.error("Error fetching tasks:", error);
+            setError("Failed to load tasks. Please try again.");
+            toast.error("Failed to load tasks");
+        } finally {
+            setLoading(false);
         }
     };
-
-
 
     const handleClick = (taskData) => {
         navigate('/admin/create-task', { state: { taskId: taskData._id } })
@@ -58,33 +58,29 @@ const ManageTasks = () => {
     // download task report
     const handleDownloadReport = async () => {
          try{
-            const response =await axiosInstance.get(API_PATHS.REPORTS.EXPORT_TASKS, {
+            const response = await axiosInstance.get(API_PATHS.REPORTS.EXPORT_TASKS, {
                 responseType: "blob",
             });
 
             // create a URL for the blob
             const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link =document.createElement("a");
-            link.href =url;
-            link.setAttribute("download", "Task_deatils.xlsx");
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "Task_details.xlsx");
             document.body.appendChild(link);
             link.click();
             link.parentNode.removeChild(link);
             window.URL.revokeObjectURL(url);
         } catch(error){
             console.error("Error downloading Task Details:", error);
-            toast.error("Failed to download Task Details. Pleases try again.")
+            toast.error("Failed to download Task Details. Please try again.")
         }
-
     };
 
     useEffect(() => {
         getAllTasks(filterStatus);
         return () => { };
-
     }, [filterStatus]);
-
-
 
     return (
         <DashboardLayout activeMenu={"Manage Tasks"}>
@@ -115,27 +111,43 @@ const ManageTasks = () => {
                         </div>
                     )}
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                    {allTasks?.map((item, index) => (
-                        <TaskCard
-                            key={item._id}
-                            title={item.title}
-                            description={item.description}
-                            priority={item.priority}
-                            status={item.status}
-                            progress={item.progress}
-                            createdAt={item.createdAt}
-                            dueDate={item.dueDate}
-                            assignedTo={item.assignedTo?.map((item) => item.profileImageUrl)}
-                            attachmentCount={item.attachments?.length || 0}
-                            completedTodoCount={item.completedTodoCount || 0}
-                            todoChecklist={item.todoChecklist || []}
-                            onClick={() => {
-                                handleClick(item);
-                            }}
-                        />
-                    ))}
-                </div>
+                
+                {loading ? (
+                    <TaskCardsSkeleton count={6} />
+                ) : error ? (
+                    <div className="flex flex-col items-center justify-center h-64 gap-4">
+                        <p className="text-red-500 text-sm">{error}</p>
+                        <button className="card-btn" onClick={() => getAllTasks()}>
+                            Retry
+                        </button>
+                    </div>
+                ) : allTasks.length === 0 ? (
+                    <div className="flex items-center justify-center h-64">
+                        <p className="text-gray-400 text-sm">No tasks found</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                        {allTasks?.map((item) => (
+                            <TaskCard
+                                key={item._id}
+                                title={item.title}
+                                description={item.description}
+                                priority={item.priority}
+                                status={item.status}
+                                progress={item.progress}
+                                createdAt={item.createdAt}
+                                dueDate={item.dueDate}
+                                assignedTo={item.assignedTo?.map((item) => item.profileImageUrl)}
+                                attachmentCount={item.attachments?.length || 0}
+                                completedTodoCount={item.completedTodoCount || 0}
+                                todoChecklist={item.todoChecklist || []}
+                                onClick={() => {
+                                    handleClick(item);
+                                }}
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
         </DashboardLayout>
     )

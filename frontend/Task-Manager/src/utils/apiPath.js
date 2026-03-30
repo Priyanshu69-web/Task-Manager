@@ -1,4 +1,4 @@
-export const BASE_URL = "https://task-manager-9ehi.onrender.com/";
+export const BASE_URL = "http://localhost:8000";
 
 //utils/apiPaths.js
 
@@ -6,11 +6,12 @@ export const API_PATHS ={
     AUTH:{
         REGISTER :"/api/auth/register", //register a new user (Admin or member)
         LOGIN:"/api/auth/login", // Authenticate user&return JWT Token
-        GET_PROFILE :"api/auth/profile", //get logged-in user details
+        GET_PROFILE :"/api/auth/profile", //get logged-in user details
+        UPDATE_PROFILE: "/api/auth/profile", //update logged-in user details
     },
 
     USERS:{
-        GET_ALL_USERS:"api/users", //get all users (admin only)
+        GET_ALL_USERS:"/api/users", //get all users (admin only)
         GET_USER_BY_ID:(userId)=> `/api/users/${userId}`, //get user by id 
      CREATE_USER:"/api/users", //create a new user (Admin only)
      UPDATE_USER:(userId)=>`/api/users/${userId}`,//update users details
@@ -27,8 +28,8 @@ export const API_PATHS ={
         UPDATE_TASK:(taskId) =>`/api/tasks/${taskId}`,
         DELETE_TASK:(taskId)=> `/api/tasks/${taskId}`,
 
-        UPDATE_TASK_STATUS:(taskId)=> `api/tasks/${taskId}/status`,
-        UPDATE_TODO_CHECKLIST:(taskId)=> `api/tasks/${taskId}/todo`
+        UPDATE_TASK_STATUS:(taskId)=> `/api/tasks/${taskId}/status`,
+        UPDATE_TODO_CHECKLIST:(taskId)=> `/api/tasks/${taskId}/todo`
 
     },
 

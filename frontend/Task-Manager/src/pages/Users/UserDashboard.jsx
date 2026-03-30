@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import { TaskContext } from "../../context/TaskContext";
 import { useUserAuth } from "../../hooks/useUserAuth";
 import DashboardLayout from "../../components/layouts/DashboardLayout";
 import { UserContext } from "../../context/useContext";
@@ -7,28 +6,29 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPath";
 import moment from "moment";
-import { addThousandsSeprator } from "../../utils/helper";
 import InfoCard from "../../components/Cards/InfoCard";
+import { addThousandsSeprator } from "../../utils/helper";
 import { LuArrowRight } from "react-icons/lu";
 import TaskListTable from "../../components/layouts/TaskListTable";
 import CustomPieChart from "../../components/Charts/CustomPieChart";
 import CustomBarChart from "../../components/Charts/CustomBarChart";
-import { motion } from 'framer-motion'
+import { DashboardSkeleton } from "../../components/layouts/Skeletons";
+import toast from "react-hot-toast";
 
 
 const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"];
 
-
-const UserDashboard = () => {
+const UserDasboard = () => {
     useUserAuth();
     const { user } = useContext(UserContext);
-    const { refreshDashboard } = useContext(TaskContext);
 
     const navigate = useNavigate();
 
     const [dashboardData, setDashboardData] = useState(null);
     const [pieChartData, setPieChartData] = useState([]);
     const [barChartData, setBarChartData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     // prepare Charts Data 
     const prepareChartData = (data) => {
@@ -37,7 +37,7 @@ const UserDashboard = () => {
 
         const taskDistributionData = [
             { status: "Pending", count: taskDistribution?.Pending || 0 },
-            { status: "In Progress", count: taskDistribution?.["In Progress"] || 0 },
+            { status: "In Progress", count: taskDistribution?.InProgress || 0 },
             { status: "Completed", count: taskDistribution?.Completed || 0 },
         ];
         setPieChartData(taskDistributionData);
@@ -52,46 +52,66 @@ const UserDashboard = () => {
 
     }
 
-    const getDashboardData = async () => {
+    const getUserDashboardData = async () => {
         try {
+            setLoading(true);
+            setError(null);
             const response = await axiosInstance.get(
                 API_PATHS.TASKS.GET_USER_DASHBOARD_DATA
             );
             if (response.data) {
                 setDashboardData(response.data);
                 prepareChartData(response.data?.charts || null);
-
             }
-
         } catch (error) {
-            console.error("Error fetching dashboard data", error);
+            console.error("Error fetching user dashboard data:", error);
+            setError("Failed to load dashboard data. Please try again.");
+            toast.error("Failed to load dashboard data");
+        } finally {
+            setLoading(false);
         }
     };
 
     const onSeeMore = () => {
-        navigate('/admin/tasks')
+        navigate('/user/tasks')
     }
 
     useEffect(() => {
-        getDashboardData();
+        getUserDashboardData();
 
         return () => { }
-    }, [refreshDashboard]);
+    }, []);
 
 
+    if (loading) {
+        return (
+            <DashboardLayout activeMenu={"Dashboard"}>
+                <DashboardSkeleton />
+            </DashboardLayout>
+        );
+    }
 
+    if (error) {
+        return (
+            <DashboardLayout activeMenu={"Dashboard"}>
+                <div className="flex flex-col items-center justify-center h-64 gap-4">
+                    <p className="text-red-500 text-sm">{error}</p>
+                    <button className="card-btn" onClick={getUserDashboardData}>
+                        Retry
+                    </button>
+                </div>
+            </DashboardLayout>
+        );
+    }
 
     return (
         <DashboardLayout activeMenu={"Dashboard"}>
             <div className="card my-5">
                 <div>
                     <div className="col-span-3">
-                        <motion.h2
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 1 }} className="text-xl md:text-2xl">
+                        <h2 className="text-xl md:text-2xl">
                             Hello! {user?.name}
-                        </motion.h2>
+                        </h2>
                         <p className="text-xs md:text-[13px] text-gray-400 mt-1.5">
                             {moment().format("dddd Do MMM YYYY")}
                         </p>
@@ -115,7 +135,7 @@ const UserDashboard = () => {
                     <InfoCard
                         label="In Progress Tasks"
                         value={addThousandsSeprator(
-                            dashboardData?.charts?.taskDistribution?.["In Progress"] || 0
+                            dashboardData?.charts?.taskDistribution?.InProgress || 0
                         )}
                         color="bg-cyan-500"
                     />
@@ -129,7 +149,7 @@ const UserDashboard = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-clos-2 gap-6 my-4 md:my-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6">
                 <div>
                     <div className="card">
                         <div className="flex items-center justify-between">
@@ -170,4 +190,4 @@ const UserDashboard = () => {
     )
 }
 
-export default UserDashboard;  
+export default UserDasboard;  

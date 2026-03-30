@@ -21,7 +21,7 @@ const TaskCard = ({
 
     const getStatusTagColor = () => {
         switch (status) {
-            case "In Progrss":
+            case "In Progress":
                 return "text-cyan-500 bg-cyan-50 border border-cyan-500/10";
 
 
