@@ -43,9 +43,14 @@ const Login = () => {
                 password,
             });
 
+            // Validate that we received a proper response object
+            if (!response.data || typeof response.data !== 'object') {
+                console.error("Unexpected login response:", response.data);
+                setError("Received an unexpected response from the server. Please try again.");
+                return;
+            }
+
             const { token, role } = response.data;
-
-
 
             // Store token in localStorage
             if (token) {
@@ -59,6 +64,9 @@ const Login = () => {
                 } else {
                     navigate("/user/dashboard");
                 }
+            } else {
+                console.error("Login response missing token:", response.data);
+                setError("Login failed: No authentication token received. Please try again.");
             }
 
         } catch (error) {

@@ -37,16 +37,17 @@ axiosInstance.interceptors.response.use(
         //Handle common error globally
         if(error.response){
             if(error.response.status ===401){
-                //redirect to login page only if not on it
-                if (window.location.pathname !== "/login") {
-                    window.location.href ="/login";
+                //redirect to login page only if not already on it
+                //Using hash check because the app uses HashRouter
+                if (!window.location.hash.includes("/login")) {
+                    localStorage.removeItem("token");
+                    window.location.hash = "#/login";
                 }
             }else if (error.response.status===500){
-                console.log("Request timeout, Please try again.");
-            } else if(error.code =="ECONNABORTED"){
-                console.log("Request tmeout. Please try again.");
+                console.error("Server error:", error.response.data?.message || "Internal server error");
             }
-            
+        } else if(error.code ==="ECONNABORTED"){
+            console.error("Request timeout. Please try again.");
         }
         return Promise.reject(error);
     }
