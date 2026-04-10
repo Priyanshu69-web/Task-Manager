@@ -1,12 +1,13 @@
 const envBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+const PRODUCTION_API_URL = "https://task-manager-9ehi.onrender.com";
 
 const getBaseUrl = () => {
     if (envBaseUrl) {
         return envBaseUrl.replace(/\/+$/, "");
     }
 
-    if (import.meta.env.MODE === "production" && typeof window !== "undefined") {
-        return window.location.origin;
+    if (import.meta.env.MODE === "production") {
+        return PRODUCTION_API_URL;
     }
 
     return "http://localhost:8000";

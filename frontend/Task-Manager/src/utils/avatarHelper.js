@@ -5,7 +5,10 @@
  */
 import { BASE_URL } from "./apiPath";
 
-const OLD_PRODUCTION_URL = "https://task-manager-9ehi.onrender.com";
+const LEGACY_BASE_URLS = [
+    "https://task-manager-1-709e.onrender.com",
+    "http://localhost:8000",
+];
 
 export const getAvatarUrl = (url) => {
     if (!url || typeof url !== 'string' || url.trim() === '') return null;
@@ -17,19 +20,15 @@ export const getAvatarUrl = (url) => {
         return trimmedUrl;
     }
 
-    // Rewrite old production URLs to current environment's BASE_URL
-    if (trimmedUrl.startsWith(OLD_PRODUCTION_URL)) {
-        return trimmedUrl.replace(OLD_PRODUCTION_URL, BASE_URL);
-    }
-
     // If it's a relative path like /uploads/..., prepend BASE_URL
     if (trimmedUrl.startsWith("/uploads")) {
         return `${BASE_URL}${trimmedUrl}`;
     }
 
-    // For other cases (e.g. localhost URL in DB but we are in production)
-    if (trimmedUrl.startsWith("http://localhost:8000")) {
-        return trimmedUrl.replace("http://localhost:8000", BASE_URL);
+    // Rewrite stale backend hosts to the active API base URL.
+    const legacyBaseUrl = LEGACY_BASE_URLS.find((url) => trimmedUrl.startsWith(url));
+    if (legacyBaseUrl) {
+        return trimmedUrl.replace(legacyBaseUrl, BASE_URL);
     }
 
     return trimmedUrl;
