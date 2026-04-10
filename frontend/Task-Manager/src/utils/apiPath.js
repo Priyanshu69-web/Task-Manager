@@ -1,6 +1,18 @@
-export const BASE_URL = import.meta.env.MODE === "production" 
-  ? "https://task-manager-1-709e.onrender.com" 
-  : "http://localhost:8000";
+const envBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+
+const getBaseUrl = () => {
+    if (envBaseUrl) {
+        return envBaseUrl.replace(/\/+$/, "");
+    }
+
+    if (import.meta.env.MODE === "production" && typeof window !== "undefined") {
+        return window.location.origin;
+    }
+
+    return "http://localhost:8000";
+};
+
+export const BASE_URL = getBaseUrl();
 
 //utils/apiPaths.js
 

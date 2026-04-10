@@ -60,6 +60,14 @@ const SignUp = () => {
                 profileImageUrl,
                 adminInviteToken
             });
+
+            // Validate that we received a proper JSON response object
+            if (!response.data || typeof response.data !== 'object') {
+                console.error("Unexpected signup response:", response.data);
+                setError("Received an unexpected response from the server. This usually means the backend is misconfigured and failing silently. Please check your backend.");
+                return;
+            }
+
             const { token, role } = response.data;
 
             if (token) {
