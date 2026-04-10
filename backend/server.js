@@ -10,6 +10,15 @@ const userRoutes = require("./routes/userRoutes");
 const taskRoutes = require('./routes/taskRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 
+// Validate required environment variables
+const requiredEnvVars = ['MONGO_URI', 'JWT_SECRET'];
+const missingEnvVars = requiredEnvVars.filter(v => !process.env[v]);
+if (missingEnvVars.length > 0) {
+    console.error(`FATAL: Missing required environment variables: ${missingEnvVars.join(', ')}`);
+    console.error('Please set these in your .env file or Render environment settings.');
+    process.exit(1);
+}
+
 // connect database
 connectDB();
 

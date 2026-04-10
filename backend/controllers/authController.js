@@ -5,6 +5,9 @@ const jwt = require("jsonwebtoken");
 //generate Jwt token
 
 const generateToken = (UserId) => {
+    if (!process.env.JWT_SECRET) {
+        throw new Error("JWT_SECRET is not defined in environment variables");
+    }
     return jwt.sign({ id: UserId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
 };
@@ -43,14 +46,14 @@ const registerUser = async (req, res) => {
         });
 
         //return user with jwt
+        const token = generateToken(user._id);
         res.status(201).json({
             _id: user._id,
             name: user.name,
             email: user.email,
             role: user.role,
             profileImageUrl: user.profileImageUrl,
-            token: generateToken(user._id),
-
+            token,
         });
 
     } catch (error) {
@@ -76,13 +79,14 @@ const loginUser = async (req, res) => {
             return res.status(401).json({ message: "invalid email or password" });
         }
         // return user data with jwt 
+        const token = generateToken(user._id);
         res.status(200).json({
             _id: user._id,
             name: user.name,
             email: user.email,
             role: user.role,
             profileImageUrl: user.profileImageUrl,
-            token: generateToken(user._id),
+            token,
         })
 
     } catch (error) {
@@ -129,14 +133,14 @@ const updateUserProfile = async (req, res) => {
         }
 
         const UpdatedUser = await user.save();
+        const token = generateToken(UpdatedUser._id);
         res.json({
-
             _id: UpdatedUser._id,
             name: UpdatedUser.name,
             email: UpdatedUser.email,
             role: UpdatedUser.role,
             profileImageUrl: UpdatedUser.profileImageUrl,
-            token: generateToken(UpdatedUser._id)
+            token,
         })
     } catch (error) {
         res.status(500).json({ message: "server error", error: error.message });
