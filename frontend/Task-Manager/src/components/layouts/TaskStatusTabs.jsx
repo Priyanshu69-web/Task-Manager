@@ -2,8 +2,8 @@ import React from "react";
 
 const TaskStatusTabs =({tabs, activeTab, setActiveTab})=>{
     return(
-        <div className="my-2">
-            <div className="flex">
+        <div className="my-2 overflow-x-auto w-full no-scrollbar">
+            <div className="flex items-center min-w-max">
                 {tabs.map((tab)=> (
                     <button 
                     key={tab.label}

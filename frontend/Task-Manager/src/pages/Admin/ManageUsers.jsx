@@ -60,7 +60,7 @@ const ManageUsers = () => {
     return (
         <DashboardLayout activeMenu={"Team Members"}>
             <div className="mt-5 mb-10">
-                <div className="flex md:flex-row md:items-center justify-between">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                     <h2 className="text-xl md:text-xl font-medium">Team Members</h2>
 
                     <button className="flex md:flex download-btn" onClick={handleDownloadReport}>

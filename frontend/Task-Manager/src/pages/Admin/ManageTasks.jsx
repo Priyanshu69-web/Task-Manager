@@ -86,7 +86,7 @@ const ManageTasks = () => {
         <DashboardLayout activeMenu={"Manage Tasks"}>
             <div className="my-5">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between">
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center justify-between w-full lg:w-auto gap-3">
                         <h2 className="text-xl md:text-xl font-medium">My Tasks</h2>
 
                         <button
@@ -98,13 +98,13 @@ const ManageTasks = () => {
                         </button>
                     </div>
                     {tabs?.[0]?.count > 0 && (
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 mt-4 lg:mt-0 overflow-x-auto no-scrollbar w-full">
                             <TaskStatusTabs
                                 tabs={tabs}
                                 activeTab={filterStatus}
                                 setActiveTab={setFilterStatus}
                             />
-                            <button className="hidden lg:flex download-btn" onClick={handleDownloadReport}>
+                            <button className="hidden lg:flex download-btn whitespace-nowrap" onClick={handleDownloadReport}>
                                 <LuFileSpreadsheet className="text-lg" />
                                 Download SpreadSheet
                             </button>
