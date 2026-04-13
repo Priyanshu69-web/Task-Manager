@@ -51,7 +51,7 @@ const CustomBarChart = ({ data }) => {
     }
 
     return (
-        <div className="bg-white mt-6" style={{ width: '100%', minWidth: 400, height: 300 }}>
+        <div className="bg-white mt-6" style={{ width: '100%', height: 300 }}>
             <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data} margin={{ bottom: 20 }}>
                     <CartesianGrid stroke="none" />

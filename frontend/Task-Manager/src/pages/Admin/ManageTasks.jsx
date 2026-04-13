@@ -98,12 +98,14 @@ const ManageTasks = () => {
                         </button>
                     </div>
                     {tabs?.[0]?.count > 0 && (
-                        <div className="flex items-center gap-3 mt-4 lg:mt-0 overflow-x-auto no-scrollbar w-full">
-                            <TaskStatusTabs
-                                tabs={tabs}
-                                activeTab={filterStatus}
-                                setActiveTab={setFilterStatus}
-                            />
+                        <div className="flex items-center gap-3 mt-4 lg:mt-0 w-full min-w-0">
+                            <div className="flex-1 min-w-0">
+                                <TaskStatusTabs
+                                    tabs={tabs}
+                                    activeTab={filterStatus}
+                                    setActiveTab={setFilterStatus}
+                                />
+                            </div>
                             <button className="hidden lg:flex download-btn whitespace-nowrap" onClick={handleDownloadReport}>
                                 <LuFileSpreadsheet className="text-lg" />
                                 Download SpreadSheet
